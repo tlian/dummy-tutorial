@@ -12,9 +12,24 @@
       apt:
         name: apache2
         state: latest
+      when: ansible_distribution == "Ubuntu"
 
     - name: Add php support for Apache
       apt:
         name: libapache2-mod-php
         state: latest
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Configure Apache2
+      shell: | 
+        # Enable SSL module ONLY if it is not already loaded
+        $(apache2ctl -M 2> /dev/null | grep "ssl_module" > /dev/null) || sudo a2enmod ssl && sudo systemctl restart apache2
+        
+        # Configure Apache2 for HTTPs ONLY if it had not been already configured
+        $(a2query -s | grep default-ssl > /dev/null) || sudo a2ensite default-ssl && sudo systemctl reload apache2
+        
+        # Disable TLS versions 1 and 1.1 in Apache2 (Notice "gi", "i" for case insensitive
+        sudo sed -i 's/.*SSLProtocol.*/SSLProtocol all -SSLv3 -TLSv1 -TLSv1.1/gi' /etc/apache2/mods-enabled/ssl.conf
+        sudo service apache2 restart
+
 
