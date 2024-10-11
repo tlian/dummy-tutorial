@@ -12,7 +12,6 @@ def index():
         email = request.form['email']
         phone = request.form['phone']
         address = request.form['address']
-        # message = "Name: {name}! \nEmail: {email} \nPhone:{phone} \nAddress:{address}"
         return f"<p>Name: {name}</p><p>Email: {email}</p><p>Phone:{phone}</p><p>Address:{address}<p>"
     return render_template('form.html')
 
