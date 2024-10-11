@@ -4,7 +4,7 @@ provider "aws" {
   access_key = var.AWS_ACCESS_KEY
   secret_key = var.AWS_SECRET_KEY
 }
-
+#======================================================
 # Declare variable 
 variable "AWS_ACCESS_KEY" {
   type = string
@@ -24,7 +24,7 @@ variable "subnet_cidr" {
   default     = "10.0.1.0/24"
   type        = string
 }
-
+#======================================================
 # Create VPC
 resource "aws_vpc" "vpc-1" {
     cidr_block = var.vpc1_cidr
@@ -33,7 +33,7 @@ resource "aws_vpc" "vpc-1" {
       Name = "tlian-dev-vpc"
     }
 }
-
+#======================================================
 # Create internet gateway
 resource "aws_internet_gateway" "internet-gw" {
   vpc_id = aws_vpc.vpc-1.id
@@ -42,7 +42,7 @@ resource "aws_internet_gateway" "internet-gw" {
     Name = "tlian-internet-gw"
   }
 }
-
+#======================================================
 # Create route table
 resource "aws_route_table" "vpc-1-rt" {
   vpc_id = aws_vpc.vpc-1.id
@@ -56,13 +56,13 @@ resource "aws_route_table" "vpc-1-rt" {
     Name = "tlian-vpc-1-rt"
   }
 }
-
+#======================================================
 # Associate subnet to route table
 resource "aws_route_table_association" "rt_subnet_association" {
   subnet_id       = aws_subnet.subnet-1.id
   route_table_id  = aws_route_table.vpc-1-rt.id
 }
-
+#======================================================
 # Create Subnet
 resource "aws_subnet" "subnet-1" {
   cidr_block        = var.subnet_cidr
@@ -74,6 +74,7 @@ resource "aws_subnet" "subnet-1" {
   }
 }
 
+#======================================================
 # create Network interfaces
 resource "aws_network_interface" "nic1" {
   subnet_id       = aws_subnet.subnet-1.id
@@ -104,7 +105,7 @@ resource "aws_network_interface" "nic3" {
     Name = "tlian-dev-nic3"
   }
 }
-
+#======================================================
 # Assign an elastic/public IP to the network interface(s) created
 resource "aws_eip" "eip1" {
   domain                    = "vpc"
@@ -126,7 +127,7 @@ resource "aws_eip" "eip3" {
   associate_with_private_ip = "10.0.1.103"
   depends_on                = [ aws_internet_gateway.internet-gw ]
 }
-
+#======================================================
 # Create Security Group to allow port 22, 80, 443
 resource "aws_security_group" "allow_ssh" {
   name        = "allow_ssh_traffic"
@@ -152,7 +153,7 @@ resource "aws_security_group" "allow_ssh" {
     Name = "tlian-allow_ssh"
   }
 }
-
+#======================================================
 # create VMs
 resource "aws_instance" "controlserver" {
   ami               = "ami-0103953a003440c37"
@@ -175,7 +176,6 @@ resource "aws_instance" "controlserver" {
   }
 }
 
-# create VMs
 resource "aws_instance" "ansibleguest1" {
   ami               = "ami-0103953a003440c37"
   instance_type     = "t2.micro"
@@ -217,3 +217,4 @@ resource "aws_instance" "ansibleguest2" {
     Name = "tlian-ansibleguest2"
   }
 }
+#======================================================
