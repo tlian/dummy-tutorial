@@ -2,7 +2,7 @@
 website/__pycache__/* 
 **/**/*.pyc
 **/.python-version
-
+**/**/instance/*.db
 .terraform
 .vagrant
 *~
