@@ -1,6 +1,7 @@
  **/**/__pycache__/
 website/__pycache__/* 
 **/**/*.pyc
+**/.python-version
 
 .terraform
 .vagrant
