@@ -22,7 +22,12 @@ git clone <repo-url>
 
 ```bash
 # set environment to Python 3.X
-rye pin 3 
+rye pin 3
+
+# Inititate rye project
+rye init
+rye fetch
+
 # Install Flask
 rye add flask
 ```
