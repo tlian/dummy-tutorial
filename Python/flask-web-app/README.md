@@ -41,3 +41,27 @@ python main.py
 ## Viewing The App
 
 Go to `http://127.0.0.1:5000`
+
+
+## Run the application in Docker Container 
+
+
+```bash 
+# Build Docker image
+--format--> docker build -t [whatever-application-name] [path-to-application]
+docker build -t flask-web-app .
+
+# List Docker images 
+docker image list
+
+# Run Docker container 
+docker run -d -p 8000:5000 flask-web-app
+
+# List Docker Containers 
+docker ps
+
+# Connect/Attach to Docker container
+docker exec -it <container-id> sh
+
+# Access the application from the host
+http://0.0.0.0:8000
