@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-app-tlian-deployment
+spec:
+  selector:
+    matchLabels:
+      app: tlian-app
+  template:
+    metadata:
+      labels:
+        app: tlian-app
+    spec:
+      containers:
+      - name: tlian-app
+        image: flask-web-app
+        imagePullPolicy: Never
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5000
