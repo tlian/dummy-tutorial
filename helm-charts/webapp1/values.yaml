@@ -1,0 +1,11 @@
+appName: tlian-helm-app
+nameSpace: default
+
+configmap:
+  name: helmappconfigmapv1.2
+  data:
+    CUSTOM_HEADER: "This app was deployed with Helm!"
+
+image:
+  name: devopsjourney1/mywebapp
+  tag: latest
