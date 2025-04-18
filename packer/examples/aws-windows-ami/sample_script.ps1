@@ -12,3 +12,7 @@ Write-Host "VAR3 is:" $Env:VAR3
 Write-Host "Finally, VAR4 is:" $Env:VAR4
 Write-Host "None of the special characters needed escaping in the template"
 
+$dlurl = 'https://7-zip.org/' + (Invoke-WebRequest -UseBasicParsing -Uri 'https://7-zip.org/' | Select-Object -ExpandProperty Links | Where-Object {($_.outerHTML -match 'Download')-and ($_.href -like "a/*") -and ($_.href -like "*-x64.exe")} | Select-Object -First 1 | Select-Object -ExpandProperty href)
+$installerPath = Join-Path $env:TEMP (Split-Path $dlurl -Leaf)
+Invoke-WebRequest $dlurl -OutFile $installerPath
+Get-ChildItem $installerPath
