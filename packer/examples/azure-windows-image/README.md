@@ -48,4 +48,8 @@ packer build .
 
 > [!WARNING]
 Ensure to delete Azure resources created above to avoid incurring charges (i.e. the Windows image created in Azure)
+ ```
  - Go to Azure console delete the image created manually
+ or
+ - az image delete --image-name <IMAGE-NAME> -g <NAME-OF-RESOURCE-GROUP>
+```
