@@ -1,0 +1,10 @@
+{
+  "azure-subscription-id": "xxxxxxxxxxxxxx",
+  "azure-client-id": "xxxxxxxxxxxxxx",
+  "azure-client-secret": "xxxxxxxxxxxxxx",
+  "azure-tenant-id": "xxxxxxxxxxxxxx",
+  "azure-resource-group": "<create-Resource-Group-beforehand>",
+  "azure-region": "<eastus>",
+  "vm-size": "<Standard_DS1_v2>",
+  "image-name": "<WindowsServer2019-Packer-02>"
+}
