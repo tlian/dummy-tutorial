@@ -6,6 +6,7 @@ website/__pycache__/*
 .terraform
 **/**/.terraform
 **/**/terraform.tfstate*
+**/**/.terraform.lock.hcl
 **/**/*.tfplan
 .vagrant
 *~
