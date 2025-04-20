@@ -4,6 +4,8 @@ website/__pycache__/*
 **/.python-version
 **/**/instance/*.db
 .terraform
+**/**/.terraform
+**/**/terraform.tfstate*
 .vagrant
 *~
 *#
