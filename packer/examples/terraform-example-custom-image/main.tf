@@ -23,12 +23,6 @@ data "azurerm_image" "search" {
   resource_group_name = "myResourceGroup"
 }
 
-
-# tlian
-# output "image_id" {
-#   value = "/subscriptions/xxxxxx/resourceGroups/RG-EASTUS-SPT-PLATFORM/providers/Microsoft.Compute/images/AZLXDEVOPS01_Image"
-# }
-
 # Create a Resource Group for the new Virtual Machine.
 resource "azurerm_resource_group" "main" {
   name     = "RG-OPT-QA-TEST"
@@ -117,11 +111,6 @@ resource "azurerm_virtual_machine" "vm" {
     admin_username = "devopsadmin"
     admin_password = "Cssladmin#2019"
   }
-
-  # tlian: commented the following
-  # os_profile_linux_config {
-  #   disable_password_authentication = false
-  # }
 
   os_profile_windows_config {
     provision_vm_agent  = false
