@@ -19,19 +19,19 @@ resource "time_sleep" "wait_60_seconds" {
 
 # Locate the existing custom/golden image
 data "azurerm_image" "search" {
-  name                = "WindowsServer2019-Packer-20250418195908"
-  resource_group_name = "myResourceGroup"
+  name                = "${var.azurerm_image_name}"
+  resource_group_name = "${var.resource_group_name_of_image}"
 }
 
 # Create a Resource Group for the new Virtual Machine.
 resource "azurerm_resource_group" "main" {
-  name     = "RG-OPT-QA-TEST"
-  location = "eastus"
+  name     = "${var.resource_group_name}"
+  location = "${var.region_in_azure}"
 }
 
 # Create a Network Security Group with some rules
 resource "azurerm_network_security_group" "main" {
-  name                = "RG-QA-Test-Dev-NSG"
+  name                = "${var.azurerm_network_security_group_name}"
   location            = "${azurerm_resource_group.main.location}"
   resource_group_name = "${azurerm_resource_group.main.name}"
 
@@ -52,8 +52,8 @@ resource "azurerm_network_security_group" "main" {
 # Create virtual network
 resource "azurerm_virtual_network" "my_terraform_network" {
   depends_on           = [ azurerm_resource_group.main, time_sleep.wait_60_seconds ]
-  name                = "RG-OPT-QA-Vnet"
-  address_space       = ["10.0.0.0/16"]
+  name                = "${var.azurerm_virtual_network_name}"
+  address_space       = ["${var.address_space}"]
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
 }
@@ -62,32 +62,32 @@ resource "azurerm_virtual_network" "my_terraform_network" {
 # Create a Subnet within the Virtual Network
 resource "azurerm_subnet" "internal" {
   depends_on           = [ azurerm_resource_group.main, azurerm_virtual_network.my_terraform_network, time_sleep.wait_60_seconds ]
-  name                 = "RG-Terraform-snet-in"
-  virtual_network_name = "RG-OPT-QA-Vnet"
+  name                 = "${var.azurerm_subnet_name}"
+  virtual_network_name = azurerm_virtual_network.my_terraform_network.name
   resource_group_name  = "${azurerm_resource_group.main.name}"
-  address_prefixes     = ["10.0.0.0/24"] # tlian
+  address_prefixes     = ["${var.azurerm_subnet_address_prefixes}"]
 }
 
 # Create a network interface for VMs and attach the PIP and the NSG
 resource "azurerm_network_interface" "main" {
-  depends_on           = [ azurerm_resource_group.main, azurerm_subnet.internal ]
-  name                      = "NIC"
+  depends_on                = [ azurerm_resource_group.main, azurerm_subnet.internal ]
+  name                      = "${var.azurerm_network_interface_name}"
   location                  = "${azurerm_resource_group.main.location}"
   resource_group_name       = "${azurerm_resource_group.main.name}"
 #   network_security_group_id = "${azurerm_network_security_group.main.id}" # tlian
 
   ip_configuration {
-    name                          = "nicconfig"
+    name                          = "${var.azurerm_network_interface_ip_configuration_name}"
     subnet_id                     = "${azurerm_subnet.internal.id}"
-    private_ip_address_allocation = "Static"
-    private_ip_address            = "${cidrhost("10.0.0.16/24", 4)}"
+    private_ip_address_allocation = "${var.private_ip_address_allocation_type}"
+    private_ip_address            = "${cidrhost("${var.private_ip_address_cidr}", 4)}"
   }
 }
 
 # Create a new Virtual Machine based on the Golden Image
 resource "azurerm_virtual_machine" "vm" {
   depends_on                       = [ azurerm_resource_group.main ]
-  name                             = "AZLXDEVOPS01"
+  name                             = "${var.azurerm_virtual_machine_name}"
   location                         = "${azurerm_resource_group.main.location}"
   resource_group_name              = "${azurerm_resource_group.main.name}"
   network_interface_ids            = ["${azurerm_network_interface.main.id}"]
@@ -100,7 +100,7 @@ resource "azurerm_virtual_machine" "vm" {
   }
 
   storage_os_disk {
-    name              = "AZLXDEVOPS01-OS"
+    name              = "${var.azurerm_virtual_machine_name}-OS"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
