@@ -59,4 +59,6 @@ build {
     ]
   }
 
+  post-processor "manifest" {}
+
 }
