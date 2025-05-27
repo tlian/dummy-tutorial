@@ -1,0 +1,18 @@
+name: Test Inputs
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'The environment to deploy to'
+        required: true
+        default: development
+  push:
+    branches: 
+      - test-tlian-c
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+        - run: echo "Deploying to ${{ github.event.inputs.environment }} environment."
