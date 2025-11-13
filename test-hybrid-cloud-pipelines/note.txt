@@ -1,0 +1,3 @@
+1. Create Hello World Ansible playbook
+2. Terraform code to spin up a VM in Azure
+3. Setup Github Action pipeline to execute the Ansible playbook in Azure VM

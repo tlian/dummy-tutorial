@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<unattend xmlns="urn:schemas-microsoft-com:unattend">
+
+  <!-- 1. windowsPE pass -->
+  <settings pass="windowsPE">
+    <component name="Microsoft-Windows-Setup" processorArchitecture="arm64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+      <!-- Select image index inside install.wim -->
+      <ImageInstall>
+        <OSImage>
+          <InstallFrom>
+            <MetaData wcm:action="add" wcm:keyValue="1">
+              <Key>/IMAGE/NAME</Key>
+              <Value>Windows 11 Pro ARM64</Value>
+            </MetaData>
+          </InstallFrom>
+          <InstallTo>
+            <DiskID>0</DiskID>
+            <PartitionID>3</PartitionID>
+          </InstallTo>
+          <WillShowUI>OnError</WillShowUI>
+        </OSImage>
+      </ImageInstall>
+
+      <!-- Automate disk partitioning -->
+      <DiskConfiguration>
+        <Disk wcm:action="add" wcm:keyValue="0">
+          <DiskID>0</DiskID>
+          <WillWipeDisk>true</WillWipeDisk>
+          <GPT>
+            <UseMaximumSize>true</UseMaximumSize>
+            <Layout>EFI</Layout>
+            <Order>
+              <DiskPartition wcm:action="add" wcm:keyValue="1">
+                <Order>1</Order>
+                <Type>EFI</Type>
+                <Size>100</Size>
+              </DiskPartition>
+              <DiskPartition wcm:action="add" wcm:keyValue="2">
+                <Order>2</Order>
+                <Type>MSR</Type>
+                <Size>16</Size>
+              </DiskPartition>
+              <DiskPartition wcm:action="add" wcm:keyValue="3">
+                <Order>3</Order>
+                <Type>Primary</Type>
+                <Extend>true</Extend>
+              </DiskPartition>
+            </Order>
+          </GPT>
+        </Disk>
+      </DiskConfiguration>
+
+      <!-- Supply your product key -->
+      <UserData>
+        <ProductKey>
+          <Key>XXXXX-XXXXX-XXXXX-XXXXX-XXXXX</Key>
+        </ProductKey>
+        <AcceptEula>true</AcceptEula>
+        <FullName>Contoso Admin</FullName>
+        <Organization>Contoso</Organization>
+      </UserData>
+    </component>
+  </settings>
+
+  <!-- 2. specialize pass -->
+  <settings pass="specialize">
+    <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="arm64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+      <ComputerName>WIN11-ARM64</ComputerName>
+      <!-- Enable WinRM for Packer -->
+      <WindowsRemoteManagement>
+        <AllowUnencrypted>true</AllowUnencrypted>
+        <TrustedHosts>*</TrustedHosts>
+      </WindowsRemoteManagement>
+      <TimeZone>Eastern Standard Time</TimeZone>
+    </component>
+  </settings>
+
+  <!-- 3. oobeSystem pass -->
+  <settings pass="oobeSystem">
+    <component name="Microsoft-Windows-International-Core" processorArchitecture="arm64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+      <InputLocale>en-US</InputLocale>
+      <SystemLocale>en-US</SystemLocale>
+      <UILanguage>en-US</UILanguage>
+      <UserLocale>en-US</UserLocale>
+    </component>
+
+    <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="arm64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+      <OOBE>
+        <HideEULAPage>true</HideEULAPage>
+        <NetworkLocation>Work</NetworkLocation>
+        <ProtectYourPC>3</ProtectYourPC>  <!-- 1: Basic, 3: Off -->
+      </OOBE>
+      <!-- Auto-login local user -->
+      <UserAccounts>
+        <LocalAccounts>
+          <LocalAccount wcm:action="add">
+            <Name>packeruser</Name>
+            <Group>Administrators</Group>
+            <Password>
+              <Value>P@ssw0rd!</Value>
+              <PlainText>true</PlainText>
+            </Password>
+          </LocalAccount>
+        </LocalAccounts>
+      </UserAccounts>
+
+      <AutoLogon>
+        <Username>packeruser</Username>
+        <Password>
+          <Value>P@ssw0rd!</Value>
+          <PlainText>true</PlainText>
+        </Password>
+        <Enabled>true</Enabled>
+      </AutoLogon>
+    </component>
+  </settings>
+
+  <!-- Final pass to commit settings -->
+  <cpi:offlineImage cpi:source="wim://./install.wim#Windows 11 Pro ARM64" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
+</unattend>
